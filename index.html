@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Paul's Bin Days</title>
+    <meta name="author" content="Paul Dragicevich" />
+    <script>
+        const KeysToInclude = ['Address', 'PropertyNo', 'Suburb', 'Ward', 'BinDay', 'Area', /Junk.*/, /Garden.*/, /Green.*/];
+      function displayError() {
+        document
+          .querySelector('#info')
+          .appendChild(document.createTextNode('Could not parse result'));
+      }
+      function displayResults(results) {
+        if (results == null || !Array.isArray(results) || results.length < 1) {
+          displayError();
+          return;
+        }
+        const result = results[0];
+
+        const info = document.querySelector('#info');
+        document.querySelector('#loading').style.display = 'none';
+        for (const key of Object.keys(result).filter(x => isIncluded(x))) {
+            appendRow(info, key, result[key]);
+        }
+      }
+      function appendRow(container, key, value) {
+        const line = document.createElement('tr');
+        appendCell(line, key);
+        appendCell(line, value);
+        container.appendChild(line);
+      }
+      function appendCell(container, text) {
+        const cell = document.createElement('td');
+        cell.appendChild(document.createTextNode(text));
+        container.appendChild(cell);
+      }
+      function isIncluded(key) {
+          for (const allowed of KeysToInclude) {
+              console.log(allowed)
+              if (typeof allowed === 'string' && allowed === key) return true;
+              if (allowed instanceof RegExp && allowed.test(key)) return true;
+          }
+          return false;
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>Paul's Bin Days</h1>
+    <p id="loading">Loading...</p>
+    <table id="info"></div>
+
+    <script src="https://gis1.cockburn.wa.gov.au/webapi/PropertyInfoSearch/PropertyNo?callback=displayResults&q=4412487&search_method=property_no&_=1650767174306"></script>
+  </body>
+</html>
