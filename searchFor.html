@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Paul's Bin Days</title>
+    <meta name="author" content="Paul Dragicevich" />
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        document.querySelector("#search").addEventListener("click", () => {
+          const address = document.querySelector("#address").value;
+          document
+            .querySelector("#result")
+            .appendChild(document.createTextNode(address));
+
+          appendScript(
+            `https://gis1.cockburn.wa.gov.au/webapiv2/LikeSearch?callback=processSearchResult&app=mapcontrol&q=${encodeURI(
+              address
+            )}&num=1&theme=Property`
+          );
+        });
+      });
+
+      function processSearchResult(result) {
+        document.querySelector("#result").innerText = JSON.stringify(result);
+      }
+
+      function appendScript(src) {
+        var script = document.createElement("script");
+
+        script.src = cacheBuster(src);
+        document.body.appendChild(script);
+      }
+      function cacheBuster(src) {
+        const buster = new Date().valueOf();
+        if (src.indexOf("?") >= 0) return `${src}&_=${buster}`;
+        return `${src}?_=${buster}`;
+      }
+    </script>
+  </head>
+
+  <body>
+    <h1>Paul's Bin Days</h1>
+
+    <div class="form">
+      <label for="address">Address</label>
+      <input type="text" id="address" name="address" />
+
+      <button id="search">Search</button>
+    </div>
+
+    <div id="result"></div>
+  </body>
+</html>
