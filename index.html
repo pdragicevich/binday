@@ -41,7 +41,6 @@
       }
       function isIncluded(key) {
         for (const allowed of KeysToInclude) {
-            console.log(allowed)
             if (typeof allowed === 'string' && allowed === key) return true;
             if (allowed instanceof RegExp && allowed.test(key)) return true;
         }
